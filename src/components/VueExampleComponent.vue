@@ -12,10 +12,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref } from 'vue'
 
-  const count = ref(10);
+  const count = ref(22);
 
   function remove(){
     console.log("removing one");

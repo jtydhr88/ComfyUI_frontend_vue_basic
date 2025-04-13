@@ -2,11 +2,13 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import transformImports from './vite-plugin-transform-imports'
 
 export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
+    transformImports()
   ],
   resolve: {
     alias: {
@@ -29,7 +31,8 @@ export default defineConfig({
     rollupOptions: {
       external: [
         '../../../scripts/app.js',
-        '../../../scripts/domWidget.js'
+        '../../../scripts/domWidget.js',
+        'vue',
       ],
       output: {
         dir: 'js',
