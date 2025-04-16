@@ -2,13 +2,11 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
-import transformImports from './vite-plugin-transform-imports'
 
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
-    transformImports()
+    vueDevTools()
   ],
   resolve: {
     alias: {
@@ -33,6 +31,7 @@ export default defineConfig({
         '../../../scripts/app.js',
         '../../../scripts/domWidget.js',
         'vue',
+        "primevue"
       ],
       output: {
         dir: 'js',
