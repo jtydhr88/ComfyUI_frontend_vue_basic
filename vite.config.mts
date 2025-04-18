@@ -6,19 +6,12 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    vueDevTools()
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
-  },
-  define: {
-    'process.env.NODE_ENV': JSON.stringify('production'),
-    'process.env': '{}',
-    'process.env.SSR': false,
-    '__VUE_OPTIONS_API__': true,
-    '__VUE_PROD_DEVTOOLS__': false
   },
   build: {
     lib: {
@@ -29,7 +22,10 @@ export default defineConfig({
     rollupOptions: {
       external: [
         '../../../scripts/app.js',
-        '../../../scripts/domWidget.js'
+        '../../../scripts/domWidget.js',
+          '../../../scripts/utils.js',
+        'vue',
+        "primevue"
       ],
       output: {
         dir: 'js',
