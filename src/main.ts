@@ -10,7 +10,6 @@ app.registerExtension({
         return {
             CUSTOM_VUE_COMPONENT_BASIC(node) {
                 // Add custom vue component here
-
                 const inputSpec = {
                   name: 'custom_vue_component_basic',
                   type: 'vue-basic'
@@ -24,6 +23,13 @@ app.registerExtension({
                   inputSpec,
                   options: {}
                 })
+
+                // output
+                widget.serializeValue = async () => {
+                    return {
+                        "terry-test": "!23"
+                    }
+                }
 
                 addWidget(node, widget)
 
