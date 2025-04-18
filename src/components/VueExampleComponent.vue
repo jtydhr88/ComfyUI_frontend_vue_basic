@@ -1,6 +1,9 @@
 <template>
   <div>
     <h1>Example</h1>
+    <div>
+      <DrawingBoard :width="300" :height="300" />
+    </div>
     <div>count: {{ count }}</div>
     <Button class="p-button-rounded p-button-text" @click="remove">
       <i
@@ -21,6 +24,7 @@
     <div>
       <ColorPicker v-model="value" />
     </div>
+
   </div>
 </template>
 
@@ -29,6 +33,7 @@
   import { Tooltip } from 'primevue'
   import DatePicker from 'primevue/datepicker';
   import ColorPicker from 'primevue/colorpicker';
+  import DrawingBoard from "./DrawingBoard.vue";
 
   const vTooltip = Tooltip
 
