@@ -1,5 +1,6 @@
 import { app } from "../../../scripts/app.js";
 import { addWidget, ComponentWidgetImpl } from "../../../scripts/domWidget.js";
+import { generateUUID } from "../../../scripts/utils.js";
 
 import VueExampleComponent from "@/components/VueExampleComponent.vue";
 
@@ -16,7 +17,7 @@ app.registerExtension({
                 }
 
                 const widget = new ComponentWidgetImpl({
-                  id: "custom_vue_component_basic",
+                  id: generateUUID(),
                   node,
                   name: inputSpec.name,
                   component: VueExampleComponent,

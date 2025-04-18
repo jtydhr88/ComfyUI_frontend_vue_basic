@@ -260,14 +260,6 @@ button.active {
   background-color: #2E7D32;
 }
 
-button.eraser {
-  background-color: #f44336;
-}
-
-button.eraser.active {
-  background-color: #c62828;
-}
-
 .color-picker {
   display: flex;
   gap: 10px;

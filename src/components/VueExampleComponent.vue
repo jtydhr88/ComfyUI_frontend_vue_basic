@@ -24,7 +24,6 @@
     <div>
       <ColorPicker v-model="value" />
     </div>
-
   </div>
 </template>
 

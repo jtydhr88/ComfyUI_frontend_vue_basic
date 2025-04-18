@@ -5,9 +5,6 @@ class ComfyUIFEExampleVueBasic:
     @classmethod
     def INPUT_TYPES(s):
         return {
-            "optional": {
-                "custom_vue_component_basic": ("CUSTOM_VUE_COMPONENT_BASIC", {}),
-            },
         }
 
     RETURN_TYPES = ("STRING",)

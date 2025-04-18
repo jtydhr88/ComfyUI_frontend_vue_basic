@@ -23,6 +23,7 @@ export default defineConfig({
       external: [
         '../../../scripts/app.js',
         '../../../scripts/domWidget.js',
+          '../../../scripts/utils.js',
         'vue',
         "primevue"
       ],
