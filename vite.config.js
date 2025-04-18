@@ -13,13 +13,6 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
-  define: {
-    'process.env.NODE_ENV': JSON.stringify('production'),
-    'process.env': '{}',
-    'process.env.SSR': false,
-    '__VUE_OPTIONS_API__': true,
-    '__VUE_PROD_DEVTOOLS__': false
-  },
   build: {
     lib: {
       entry: './src/main.js',

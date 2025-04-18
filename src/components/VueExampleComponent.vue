@@ -15,16 +15,26 @@
     <div v-if="count < 5">
       < 5
     </div>
+    <div>
+      <DatePicker v-model="date" />
+    </div>
+    <div>
+      <ColorPicker v-model="value" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue'
   import { Tooltip } from 'primevue'
+  import DatePicker from 'primevue/datepicker';
+  import ColorPicker from 'primevue/colorpicker';
 
   const vTooltip = Tooltip
 
   const count = ref(10);
+  const date = ref(new Date());
+  const value = ref('');
 
   function remove(){
     console.log("removing one");
