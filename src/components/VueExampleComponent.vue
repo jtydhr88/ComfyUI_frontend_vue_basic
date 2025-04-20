@@ -2,53 +2,36 @@
   <div>
     <h1>Example</h1>
     <div>
-      <DrawingBoard :width="300" :height="300" />
-    </div>
-    <div>count: {{ count }}</div>
-    <Button class="p-button-rounded p-button-text" @click="remove">
-      <i
-        v-tooltip.right="{ value: 'this is primevue-test', showDelay: 300 }"
-        class="pi pi-expand text-white text-lg"
-      />
-    </Button>
-    <button @click="remove">Remove one</button>
-    <div v-if="count > 5">
-      > 5
-    </div>
-    <div v-if="count < 5">
-      < 5
-    </div>
-    <div>
-      <DatePicker v-model="date" />
-    </div>
-    <div>
-      <ColorPicker v-model="value" />
+      <DrawingApp :width="300" :height="300" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import { Tooltip } from 'primevue'
-  import DatePicker from 'primevue/datepicker';
-  import ColorPicker from 'primevue/colorpicker';
-  import DrawingBoard from "./DrawingBoard.vue";
+  import { onMounted } from 'vue'
+  import DrawingApp from "./DrawingApp.vue";
 
-  const vTooltip = Tooltip
+  const { widget } = defineProps<{
+    widget: ComponentWidget<string[]>
+  }>()
 
-  const count = ref(10);
-  const date = ref(new Date());
-  const value = ref('');
+  const node = widget.node
 
-  function remove(){
-    console.log("removing one");
-
-    if (count.value > 0){
-      count.value = count.value - 1;
-
-      console.log(count.value);
+  onMounted(() => {
+    node.onResize = function () {
+      console.log("resize")
     }
-  }
+
+    widget.serializeValue = async (node, index) => {
+        console.log("inside vue")
+        console.log("node", node)
+        console.log("index", index)
+
+        return {
+            "terry-test": "!23"
+        }
+    }
+  })
 </script>
 
 <style scoped>

@@ -1,24 +1,5 @@
 <template>
   <div class="drawing-board">
-    <div class="toolbar">
-      <button :class="{ active: !isEraser }" @click="setTool('pen')">pen</button>
-      <button @click="clearCanvas">clear canvas</button>
-    </div>
-
-    <div class="color-picker">
-      <div v-for="(color, index) in colors"
-           :key="index"
-           :style="{ backgroundColor: color }"
-           :class="{ 'color-option': true, 'active': currentColor === color }"
-           @click="selectColor(color)">
-      </div>
-    </div>
-
-    <div class="size-slider">
-      <label>brush size: {{ brushSize }}px</label>
-      <input type="range" min="1" max="50" v-model.number="brushSize" @change="updateBrushStyle">
-    </div>
-
     <div class="canvas-container">
       <canvas
         ref="canvas"
@@ -59,11 +40,6 @@ export default {
       type: Number,
       required: false,
       default: 5
-    },
-    availableColors: {
-      type: Array,
-      required: false,
-      default: () => ['#000000', '#ff0000', '#0000ff', '#00ff00', '#ffff00', '#ff00ff', '#00ffff']
     }
   },
   data() {
@@ -75,7 +51,6 @@ export default {
       isEraser: false,
       brushSize: this.initialBrushSize,
       currentColor: this.initialColor,
-      colors: this.availableColors,
       canvasData: null
     };
   },
@@ -191,18 +166,16 @@ export default {
     setTool(tool) {
       this.isEraser = tool === 'eraser';
       this.updateBrushStyle();
-
-      this.$emit('tool-change', tool);
     },
 
-    selectColor(color) {
+    setColor(color) {
       this.currentColor = color;
-      if (this.isEraser) {
-        this.isEraser = false;
-      }
       this.updateBrushStyle();
+    },
 
-      this.$emit('color-change', color);
+    setBrushSize(size) {
+      this.brushSize = size;
+      this.updateBrushStyle();
     },
 
     clearCanvas() {
@@ -239,47 +212,5 @@ canvas {
   cursor: crosshair;
   background-color: white;
   max-width: 100%;
-}
-
-.toolbar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-button {
-  padding: 8px 16px;
-  cursor: pointer;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-}
-
-button.active {
-  background-color: #2E7D32;
-}
-
-.color-picker {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
-}
-
-.color-option {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid transparent;
-}
-
-.color-option.active {
-  border: 2px solid #333;
-}
-
-.size-slider {
-  margin-bottom: 15px;
 }
 </style>
