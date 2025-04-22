@@ -16,15 +16,15 @@ app.registerExtension({
                 }
 
                 const widget = new ComponentWidgetImpl({
-                  node,
-                  name: inputSpec.name,
-                  component: VueExampleComponent,
-                  inputSpec,
-                  options: {}
+                    node,
+                    name: inputSpec.name,
+                    component: VueExampleComponent,
+                    inputSpec,
+                    options: {}
                 })
 
                 addWidget(node, widget)
-
+                
                 return {widget}
             }
         }
@@ -32,6 +32,8 @@ app.registerExtension({
     nodeCreated(node) {
         if (node.constructor.comfyClass !== 'vue-basic') return
 
-        console.log(node)
+        const [oldWidth, oldHeight] = node.size
+
+        node.setSize([Math.max(oldWidth, 320), Math.max(oldHeight, 500)])
     }
 });

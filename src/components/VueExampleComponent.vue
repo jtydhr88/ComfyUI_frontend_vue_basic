@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Example</h1>
+    <h1>Vue Basic Example</h1>
     <div>
       <DrawingApp :width="300" :height="300" />
     </div>
@@ -18,10 +18,6 @@
   const node = widget.node
 
   onMounted(() => {
-    node.onResize = function () {
-      console.log("resize")
-    }
-
     widget.serializeValue = async (node, index) => {
         console.log("inside vue")
         console.log("node", node)

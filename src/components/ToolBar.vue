@@ -1,7 +1,6 @@
 <template>
   <div class="toolbar">
     <button :class="{ active: currentTool === 'pen' }" @click="setTool('pen')">pen</button>
-    <button :class="{ active: currentTool === 'eraser' }" @click="setTool('eraser')">eraser</button>
     <button @click="clearCanvas">clear canvas</button>
   </div>
 
@@ -11,7 +10,7 @@
             :class="{ 'color-button': true, 'active': currentColor === color }"
             @click="selectColor(color)"
             type="button"
-            :title="color"> <!-- Add tooltip for color value -->
+            :title="color">
       <i class="pi pi-circle-fill" :style="{ color: color }"></i>
     </button>
   </div>
