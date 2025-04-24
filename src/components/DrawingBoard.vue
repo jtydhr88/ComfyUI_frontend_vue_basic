@@ -17,183 +17,221 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'DrawingBoard',
-  props: {
-    width: {
-      type: Number,
-      required: false,
-      default: 800
-    },
-    height: {
-      type: Number,
-      required: false,
-      default: 500
-    },
-    initialColor: {
-      type: String,
-      required: false,
-      default: '#000000'
-    },
-    initialBrushSize: {
-      type: Number,
-      required: false,
-      default: 5
-    }
-  },
-  data() {
-    return {
-      isDrawing: false,
-      lastX: 0,
-      lastY: 0,
-      ctx: null,
-      isEraser: false,
-      brushSize: this.initialBrushSize,
-      currentColor: this.initialColor,
-      canvasData: null
-    };
-  },
-  mounted() {
-    this.ctx = this.$refs.canvas.getContext('2d');
-    this.setupCanvas();
+<script setup lang="ts">
+import { ref, onMounted, nextTick, defineProps, defineEmits, defineExpose } from 'vue';
 
-    this.$nextTick(() => {
-      this.$emit('mounted', this.$refs.canvas);
+interface Props {
+  width?: number;
+  height?: number;
+  initialColor?: string;
+  initialBrushSize?: number;
+}
+
+const props = defineProps<Props>();
+
+// 提供默认值
+const width = props.width || 800;
+const height = props.height || 500;
+const initialColor = props.initialColor || '#000000';
+const initialBrushSize = props.initialBrushSize || 5;
+
+const emit = defineEmits<{
+  'mounted': [canvas: HTMLCanvasElement];
+  'drawing-start': [data: { x: number; y: number; tool: string }];
+  'drawing': [data: { x: number; y: number; tool: string }];
+  'drawing-end': [];
+  'state-save': [data: string];
+  'canvas-clear': [];
+}>();
+
+// 响应式数据
+const isDrawing = ref(false);
+const lastX = ref(0);
+const lastY = ref(0);
+const ctx = ref<CanvasRenderingContext2D | null>(null);
+const isEraser = ref(false);
+const brushSize = ref(initialBrushSize);
+const currentColor = ref(initialColor);
+const canvasData = ref<string | null>(null);
+const canvas = ref<HTMLCanvasElement | null>(null);
+
+// 生命周期钩子
+onMounted(() => {
+  if (canvas.value) {
+    ctx.value = canvas.value.getContext('2d');
+    setupCanvas();
+
+    nextTick(() => {
+      if (canvas.value) {
+        emit('mounted', canvas.value);
+      }
     });
-  },
-  methods: {
-    setupCanvas() {
-      this.ctx.fillStyle = "#ffffff";
-      this.ctx.fillRect(0, 0, this.width, this.height);
-
-      this.updateBrushStyle();
-
-      this.saveState();
-    },
-
-    updateBrushStyle() {
-      if (this.isEraser) {
-        this.ctx.globalCompositeOperation = 'destination-out';
-        this.ctx.strokeStyle = 'rgba(0,0,0,1)';
-      } else {
-        this.ctx.globalCompositeOperation = 'source-over';
-        this.ctx.strokeStyle = this.currentColor;
-      }
-      this.ctx.lineWidth = this.brushSize;
-      this.ctx.lineJoin = 'round';
-      this.ctx.lineCap = 'round';
-    },
-
-    startDrawing(event) {
-      this.isDrawing = true;
-      const { offsetX, offsetY } = this.getCoordinates(event);
-      this.lastX = offsetX;
-      this.lastY = offsetY;
-
-      this.ctx.beginPath();
-      this.ctx.moveTo(this.lastX, this.lastY);
-
-      this.ctx.arc(this.lastX, this.lastY, this.brushSize / 2, 0, Math.PI * 2);
-      this.ctx.fill();
-
-      this.$emit('drawing-start', { x: offsetX, y: offsetY, tool: this.isEraser ? 'eraser' : 'pen' });
-    },
-
-    draw(event) {
-      if (!this.isDrawing) return;
-
-      const { offsetX, offsetY } = this.getCoordinates(event);
-
-      this.ctx.beginPath();
-      this.ctx.moveTo(this.lastX, this.lastY);
-      this.ctx.lineTo(offsetX, offsetY);
-      this.ctx.stroke();
-
-      this.lastX = offsetX;
-      this.lastY = offsetY;
-
-      this.$emit('drawing', { x: offsetX, y: offsetY, tool: this.isEraser ? 'eraser' : 'pen' });
-    },
-
-    stopDrawing() {
-      if (this.isDrawing) {
-        this.isDrawing = false;
-        this.saveState();
-
-        this.$emit('drawing-end');
-      }
-    },
-
-    getCoordinates(event) {
-      let offsetX, offsetY;
-
-      if (event.type.startsWith('touch')) {
-        event.preventDefault();
-        const rect = this.$refs.canvas.getBoundingClientRect();
-        offsetX = event.touches[0].clientX - rect.left;
-        offsetY = event.touches[0].clientY - rect.top;
-      } else {
-        offsetX = event.offsetX;
-        offsetY = event.offsetY;
-      }
-
-      return { offsetX, offsetY };
-    },
-
-    handleTouchStart(event) {
-      event.preventDefault();
-      const touch = event.touches[0];
-      const mouseEvent = {
-        type: 'touch',
-        touches: [touch]
-      };
-      this.startDrawing(mouseEvent);
-    },
-
-    handleTouchMove(event) {
-      event.preventDefault();
-      if (!this.isDrawing) return;
-
-      const touch = event.touches[0];
-      const mouseEvent = {
-        type: 'touch',
-        touches: [touch]
-      };
-      this.draw(mouseEvent);
-    },
-
-    setTool(tool) {
-      this.isEraser = tool === 'eraser';
-      this.updateBrushStyle();
-    },
-
-    setColor(color) {
-      this.currentColor = color;
-      this.updateBrushStyle();
-    },
-
-    setBrushSize(size) {
-      this.brushSize = size;
-      this.updateBrushStyle();
-    },
-
-    clearCanvas() {
-      this.ctx.fillStyle = "#ffffff";
-      this.ctx.fillRect(0, 0, this.width, this.height);
-      this.updateBrushStyle();
-      this.saveState();
-
-      this.$emit('canvas-clear');
-    },
-
-    saveState() {
-      this.canvasData = this.$refs.canvas.toDataURL('image/png');
-
-      this.$emit('state-save', this.canvasData);
-    },
   }
-};
+});
+
+// 方法
+function setupCanvas(): void {
+  if (!ctx.value) return;
+
+  ctx.value.fillStyle = "#ffffff";
+  ctx.value.fillRect(0, 0, width, height);
+
+  updateBrushStyle();
+  saveState();
+}
+
+function updateBrushStyle(): void {
+  if (!ctx.value) return;
+
+  if (isEraser.value) {
+    ctx.value.globalCompositeOperation = 'destination-out';
+    ctx.value.strokeStyle = 'rgba(0,0,0,1)';
+  } else {
+    ctx.value.globalCompositeOperation = 'source-over';
+    ctx.value.strokeStyle = currentColor.value;
+  }
+  ctx.value.lineWidth = brushSize.value;
+  ctx.value.lineJoin = 'round';
+  ctx.value.lineCap = 'round';
+}
+
+interface Coordinates {
+  offsetX: number;
+  offsetY: number;
+}
+
+function startDrawing(event: MouseEvent | TouchEvent): void {
+  isDrawing.value = true;
+  const { offsetX, offsetY } = getCoordinates(event);
+  lastX.value = offsetX;
+  lastY.value = offsetY;
+
+  if (!ctx.value) return;
+
+  ctx.value.beginPath();
+  ctx.value.moveTo(lastX.value, lastY.value);
+
+  ctx.value.arc(lastX.value, lastY.value, brushSize.value / 2, 0, Math.PI * 2);
+  ctx.value.fill();
+
+  emit('drawing-start', {
+    x: offsetX,
+    y: offsetY,
+    tool: isEraser.value ? 'eraser' : 'pen'
+  });
+}
+
+function draw(event: MouseEvent | TouchEvent): void {
+  if (!isDrawing.value || !ctx.value) return;
+
+  const { offsetX, offsetY } = getCoordinates(event);
+
+  ctx.value.beginPath();
+  ctx.value.moveTo(lastX.value, lastY.value);
+  ctx.value.lineTo(offsetX, offsetY);
+  ctx.value.stroke();
+
+  lastX.value = offsetX;
+  lastY.value = offsetY;
+
+  emit('drawing', {
+    x: offsetX,
+    y: offsetY,
+    tool: isEraser.value ? 'eraser' : 'pen'
+  });
+}
+
+function stopDrawing(): void {
+  if (isDrawing.value) {
+    isDrawing.value = false;
+    saveState();
+
+    emit('drawing-end');
+  }
+}
+
+function getCoordinates(event: MouseEvent | TouchEvent): Coordinates {
+  let offsetX = 0;
+  let offsetY = 0;
+
+  if ('touches' in event) {
+    event.preventDefault();
+    if (canvas.value) {
+      const rect = canvas.value.getBoundingClientRect();
+      offsetX = event.touches[0].clientX - rect.left;
+      offsetY = event.touches[0].clientY - rect.top;
+    }
+  } else {
+    offsetX = (event as MouseEvent).offsetX;
+    offsetY = (event as MouseEvent).offsetY;
+  }
+
+  return { offsetX, offsetY };
+}
+
+function handleTouchStart(event: TouchEvent): void {
+  event.preventDefault();
+  const touch = event.touches[0];
+  const touchEvent = {
+    touches: [touch]
+  } as TouchEvent;
+  startDrawing(touchEvent);
+}
+
+function handleTouchMove(event: TouchEvent): void {
+  event.preventDefault();
+  if (!isDrawing.value) return;
+
+  const touch = event.touches[0];
+  const touchEvent = {
+    touches: [touch]
+  } as TouchEvent;
+  draw(touchEvent);
+}
+
+function setTool(tool: string): void {
+  isEraser.value = tool === 'eraser';
+  updateBrushStyle();
+}
+
+function setColor(color: string): void {
+  currentColor.value = color;
+  updateBrushStyle();
+}
+
+function setBrushSize(size: number): void {
+  brushSize.value = size;
+  updateBrushStyle();
+}
+
+function clearCanvas(): void {
+  if (!ctx.value) return;
+
+  ctx.value.fillStyle = "#ffffff";
+  ctx.value.fillRect(0, 0, width, height);
+  updateBrushStyle();
+  saveState();
+
+  emit('canvas-clear');
+}
+
+function saveState(): void {
+  if (!canvas.value) return;
+
+  canvasData.value = canvas.value.toDataURL('image/png');
+
+  if (canvasData.value) {
+    emit('state-save', canvasData.value);
+  }
+}
+
+// 暴露方法供父组件调用
+defineExpose({
+  setTool,
+  setColor,
+  setBrushSize,
+  clearCanvas
+});
 </script>
 
 <style scoped>
