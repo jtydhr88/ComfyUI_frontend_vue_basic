@@ -1,31 +1,36 @@
 <template>
   <div>
-    <h1>Example</h1>
-    <div>count: {{ count }}</div>
-    <button @click="remove">Remove one</button>
-    <div v-if="count > 5">
-      > 5
-    </div>
-    <div v-if="count < 5">
-      < 5
+    <h1>{{ t("vue-basic.title") }}</h1>
+    <div>
+      <DrawingApp :width="300" :height="300" />
     </div>
   </div>
 </template>
 
-<script setup>
-  import { ref } from 'vue'
+<script setup lang="ts">
+  import { onMounted } from 'vue'
+  import DrawingApp from "./DrawingApp.vue";
+  import { useI18n } from 'vue-i18n'
 
-  const count = ref(10);
+  const { t } = useI18n()
 
-  function remove(){
-    console.log("removing one");
+  const { widget } = defineProps<{
+    widget: ComponentWidget<string[]>
+  }>()
 
-    if (count.value > 0){
-      count.value = count.value - 1;
+  const node = widget.node
 
-      console.log(count.value);
+  onMounted(() => {
+    widget.serializeValue = async (node, index) => {
+        console.log("inside vue")
+        console.log("node", node)
+        console.log("index", index)
+
+        return {
+            "terry-test": "!23"
+        }
     }
-  }
+  })
 </script>
 
 <style scoped>

@@ -11,21 +11,20 @@ app.registerExtension({
                 // Add custom vue component here
 
                 const inputSpec = {
-                  name: 'custom_vue_component_basic',
-                  type: 'vue-basic'
+                    name: 'custom_vue_component_basic',
+                    type: 'vue-basic',
                 }
 
                 const widget = new ComponentWidgetImpl({
-                  id: "custom_vue_component_basic",
-                  node,
-                  name: inputSpec.name,
-                  component: VueExampleComponent,
-                  inputSpec,
-                  options: {}
+                    node,
+                    name: inputSpec.name,
+                    component: VueExampleComponent,
+                    inputSpec,
+                    options: {}
                 })
 
                 addWidget(node, widget)
-
+                
                 return {widget}
             }
         }
@@ -33,6 +32,8 @@ app.registerExtension({
     nodeCreated(node) {
         if (node.constructor.comfyClass !== 'vue-basic') return
 
-        console.log(node)
+        const [oldWidth, oldHeight] = node.size
+
+        node.setSize([Math.max(oldWidth, 320), Math.max(oldHeight, 500)])
     }
 });

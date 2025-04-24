@@ -5,7 +5,7 @@ class ComfyUIFEExampleVueBasic:
     @classmethod
     def INPUT_TYPES(s):
         return {
-            "optional": {
+            "required": {
                 "custom_vue_component_basic": ("CUSTOM_VUE_COMPONENT_BASIC", {}),
             },
         }
@@ -15,7 +15,9 @@ class ComfyUIFEExampleVueBasic:
 
     CATEGORY = "examples"
 
-    def run(self):
+    def run(self,  **kwargs):
+        print(kwargs)
+
         return ("",)
 
 NODE_CLASS_MAPPINGS = {
