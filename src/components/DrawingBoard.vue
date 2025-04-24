@@ -29,7 +29,6 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// 提供默认值
 const width = props.width || 800;
 const height = props.height || 500;
 const initialColor = props.initialColor || '#000000';
@@ -44,7 +43,6 @@ const emit = defineEmits<{
   'canvas-clear': [];
 }>();
 
-// 响应式数据
 const isDrawing = ref(false);
 const lastX = ref(0);
 const lastY = ref(0);
@@ -55,7 +53,6 @@ const currentColor = ref(initialColor);
 const canvasData = ref<string | null>(null);
 const canvas = ref<HTMLCanvasElement | null>(null);
 
-// 生命周期钩子
 onMounted(() => {
   if (canvas.value) {
     ctx.value = canvas.value.getContext('2d');
@@ -69,7 +66,6 @@ onMounted(() => {
   }
 });
 
-// 方法
 function setupCanvas(): void {
   if (!ctx.value) return;
 
@@ -225,12 +221,24 @@ function saveState(): void {
   }
 }
 
-// 暴露方法供父组件调用
+async function getCurrentCanvasData(): Promise<string> {
+  if (!canvas.value) {
+    throw new Error("Canvas is unable to get current data");
+  }
+
+  if (canvasData.value) {
+    return canvasData.value;
+  }
+
+  return canvas.value.toDataURL('image/png');
+}
+
 defineExpose({
   setTool,
   setColor,
   setBrushSize,
-  clearCanvas
+  clearCanvas,
+  getCurrentCanvasData
 });
 </script>
 

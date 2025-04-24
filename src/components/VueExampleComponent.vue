@@ -2,17 +2,25 @@
   <div>
     <h1>{{ t("vue-basic.title") }}</h1>
     <div>
-      <DrawingApp :width="300" :height="300" />
+      <DrawingApp
+        ref="drawingAppRef"
+        :width="300"
+        :height="300"
+        @state-save="handleStateSave"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { onMounted } from 'vue'
+  import { onMounted, ref } from 'vue'
   import DrawingApp from "./DrawingApp.vue";
   import { useI18n } from 'vue-i18n'
+  import { app } from "../../../scripts/app.js";
 
   const { t } = useI18n()
+  const drawingAppRef = ref<InstanceType<typeof DrawingApp> | null>(null);
+  const canvasDataURL = ref<string | null>(null);
 
   const { widget } = defineProps<{
     widget: ComponentWidget<string[]>
@@ -20,15 +28,45 @@
 
   const node = widget.node
 
+  function handleStateSave(dataURL: string) {
+    canvasDataURL.value = dataURL;
+
+    console.log("canvas state saved:", dataURL.substring(0, 50) + "...");
+  }
+
+  async function uploadTempImage(imageData: string, prefix: string) {
+    const blob = await fetch(imageData).then((r) => r.blob())
+    const name = `${prefix}_${Date.now()}.png`
+    const file = new File([blob], name)
+
+    const body = new FormData()
+    body.append('image', file)
+    body.append('subfolder', 'threed')
+    body.append('type', 'temp')
+
+    console.log(app.api.fetchApi)
+
+    const resp = await app.api.fetchApi('/upload/image', {
+      method: 'POST',
+      body
+    })
+
+    return resp.json()
+  }
+
   onMounted(() => {
     widget.serializeValue = async (node, index) => {
-        console.log("inside vue")
-        console.log("node", node)
-        console.log("index", index)
+      console.log("inside vue")
+      console.log("node", node)
+      console.log("index", index)
 
-        return {
-            "terry-test": "!23"
-        }
+      const canvasData = canvasDataURL.value
+
+      const data = await uploadTempImage(canvasData, "test_vue_basic")
+
+      return {
+        image: `threed/${data.name} [temp]`
+      }
     }
   })
 </script>

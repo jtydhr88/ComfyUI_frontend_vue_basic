@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits, defineExpose } from 'vue';
 import ToolBar from './ToolBar.vue';
 import DrawingBoard from './DrawingBoard.vue';
 
@@ -40,7 +40,6 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// 提供默认值
 const width = props.width || 800;
 const height = props.height || 500;
 const initialColor = props.initialColor || '#000000';
@@ -54,14 +53,14 @@ const emit = defineEmits<{
   'drawing-start': [data: any];
   'drawing': [data: any];
   'drawing-end': [];
-  'state-save': [data: any];
+  'state-save': [data: string];
   'mounted': [canvas: HTMLCanvasElement];
 }>();
 
-// 引用绘图板组件
 const drawingBoard = ref<InstanceType<typeof DrawingBoard> | null>(null);
 
-// 处理工具栏事件
+const lastCanvasData = ref<string | null>(null);
+
 function handleToolChange(tool: string): void {
   drawingBoard.value?.setTool(tool);
   emit('tool-change', tool);
@@ -93,13 +92,36 @@ function onDrawingEnd(): void {
   emit('drawing-end');
 }
 
-function onStateSave(data: any): void {
+function onStateSave(data: string): void {
+  lastCanvasData.value = data;
   emit('state-save', data);
 }
 
 function onDrawingBoardMounted(canvas: HTMLCanvasElement): void {
   emit('mounted', canvas);
 }
+
+async function getCanvasData(): Promise<string> {
+  if (lastCanvasData.value) {
+    return lastCanvasData.value;
+  }
+
+  if (drawingBoard.value) {
+    try {
+      return await drawingBoard.value.getCurrentCanvasData();
+    }
+    catch (error) {
+      console.error("unable to get canvas data:", error);
+      throw new Error("unable to get canvas data");
+    }
+  }
+
+  throw new Error("get canvas data failed");
+}
+
+defineExpose({
+  getCanvasData
+});
 </script>
 
 <style scoped>
