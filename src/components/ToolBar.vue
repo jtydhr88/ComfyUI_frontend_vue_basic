@@ -1,7 +1,7 @@
 <template>
   <div class="toolbar">
-    <button :class="{ active: currentTool === 'pen' }" @click="setTool('pen')">pen</button>
-    <button @click="clearCanvas">clear canvas</button>
+    <button :class="{ active: currentTool === 'pen' }" @click="setTool('pen')">{{ t("vue-basic.pen") }}</button>
+    <button @click="clearCanvas">{{ t("vue-basic.clear-canvas") }}</button>
   </div>
 
   <div class="color-picker">
@@ -16,61 +16,57 @@
   </div>
 
   <div class="size-slider">
-    <label>brush size: {{ brushSize }}px</label>
+    <label>{{ t("vue-basic.brush-size") }}: {{ brushSize }}px</label>
     <input type="range" min="1" max="50" :value="brushSize" @change="updateBrushSize($event)">
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ToolBar',
-  props: {
-    colors: {
-      type: Array,
-      required: false,
-      default: () => ['#000000', '#ff0000', '#0000ff', '#69a869', '#ffff00', '#ff00ff', '#00ffff']
-    },
-    initialColor: {
-      type: String,
-      required: false,
-      default: '#000000'
-    },
-    initialBrushSize: {
-      type: Number,
-      required: false,
-      default: 5
-    },
-    initialTool: {
-      type: String,
-      required: false,
-      default: 'pen'
-    }
-  },
-  data() {
-    return {
-      currentColor: this.initialColor,
-      brushSize: this.initialBrushSize,
-      currentTool: this.initialTool
-    };
-  },
-  methods: {
-    setTool(tool) {
-      this.currentTool = tool;
-      this.$emit('tool-change', tool);
-    },
-    selectColor(color) {
-      this.currentColor = color;
-      this.$emit('color-change', color);
-    },
-    clearCanvas() {
-      this.$emit('canvas-clear');
-    },
-    updateBrushSize(event) {
-      this.brushSize = Number(event.target.value);
-      this.$emit('brush-size-change', this.brushSize);
-    }
-  }
-};
+<script setup lang="ts">
+import { ref, defineProps, defineEmits } from 'vue';
+import {useI18n} from "vue-i18n";
+
+const { t } = useI18n()
+
+interface Props {
+  colors?: string[];
+  initialColor?: string;
+  initialBrushSize?: number;
+  initialTool?: string;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  'tool-change': [tool: string];
+  'color-change': [color: string];
+  'canvas-clear': [];
+  'brush-size-change': [size: number];
+}>();
+
+const colors = props.colors || ['#000000', '#ff0000', '#0000ff', '#69a869', '#ffff00', '#ff00ff', '#00ffff'];
+const currentColor = ref(props.initialColor || '#000000');
+const brushSize = ref(props.initialBrushSize || 5);
+const currentTool = ref(props.initialTool || 'pen');
+
+function setTool(tool: string): void {
+  currentTool.value = tool;
+  emit('tool-change', tool);
+}
+
+function selectColor(color: string): void {
+  currentColor.value = color;
+  emit('color-change', color);
+}
+
+function clearCanvas(): void {
+  emit('canvas-clear');
+}
+
+function updateBrushSize(event: Event): void {
+  const target = event.target as HTMLInputElement;
+  brushSize.value = Number(target.value);
+  emit('brush-size-change', brushSize.value);
+}
 </script>
 
 <style scoped>

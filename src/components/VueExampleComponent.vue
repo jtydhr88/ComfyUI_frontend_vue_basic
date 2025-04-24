@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Vue Basic Example</h1>
+    <h1>{{ t("vue-basic.title") }}</h1>
     <div>
       <DrawingApp :width="300" :height="300" />
     </div>
@@ -10,6 +10,9 @@
 <script setup lang="ts">
   import { onMounted } from 'vue'
   import DrawingApp from "./DrawingApp.vue";
+  import { useI18n } from 'vue-i18n'
+
+  const { t } = useI18n()
 
   const { widget } = defineProps<{
     widget: ComponentWidget<string[]>
