@@ -1,0 +1,15 @@
+[project]
+name = "comfyui_frontend_vue_basic"
+description = "ComfyUI Frontend Vue Basic is custom node that demonstrate how to use vue as frontend framework along with primevue and vue-i18n, cooperating with ComfyUI API"
+version = "0.0.1"
+license = "MIT License"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/jtydhr88/ComfyUI_frontend_vue_basic"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "jtydhr88"
+DisplayName = "ComfyUI Frontend Vue Basic"
+Icon = ""
