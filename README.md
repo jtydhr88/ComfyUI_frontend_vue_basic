@@ -1,4 +1,5 @@
 # ComfyUI Frontend Vue Basic
+(Still WIP)
 
 A demonstration custom node that showcases how to integrate Vue as a frontend framework within ComfyUI, complete with PrimeVue components and vue-i18n support.
 
