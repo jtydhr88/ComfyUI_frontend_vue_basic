@@ -1,7 +1,7 @@
 [project]
 name = "comfyui_frontend_vue_basic"
 description = "ComfyUI Frontend Vue Basic is custom node that demonstrate how to use vue as frontend framework along with primevue and vue-i18n, cooperating with ComfyUI API"
-version = "0.0.12"
+version = "0.0.13"
 license = {file = "LICENSE"}
 dependencies = []
 

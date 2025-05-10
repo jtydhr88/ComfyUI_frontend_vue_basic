@@ -1,18 +1,22 @@
 <template>
   <div class="toolbar">
-    <button :class="{ active: currentTool === 'pen' }" @click="setTool('pen')">{{ t("vue-basic.pen") }}</button>
-    <button @click="clearCanvas">{{ t("vue-basic.clear-canvas") }}</button>
+    <Button
+        v-tooltip="{ value: t('vue-basic.pen-tooltip'), showDelay: 300 }"
+        :class="{ active: currentTool === 'pen' }"
+        @click="setTool('pen')">{{ t("vue-basic.pen") }}
+    </Button>
+    <Button @click="clearCanvas">{{ t("vue-basic.clear-canvas") }}</Button>
   </div>
 
   <div class="color-picker">
-    <button v-for="(color, index) in colors"
+    <Button v-for="(color, index) in colors"
             :key="index"
             :class="{ 'color-button': true, 'active': currentColor === color }"
             @click="selectColor(color)"
             type="button"
             :title="color">
       <i class="pi pi-circle-fill" :style="{ color: color }"></i>
-    </button>
+    </Button>
   </div>
 
   <div class="size-slider">
@@ -22,6 +26,7 @@
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button'
 import { ref, defineProps, defineEmits } from 'vue';
 import {useI18n} from "vue-i18n";
 
