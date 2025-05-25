@@ -26,8 +26,9 @@ export default defineConfig({
                 '../../../scripts/domWidget.js',
                 '../../../scripts/utils.js',
                 'vue',
-                "primevue",
-                "vue-i18n"
+                'vue-i18n',
+                /^primevue\/?.*/,
+                /^@primevue\/themes\/?.*/,
             ],
             output: {
                 dir: 'js',

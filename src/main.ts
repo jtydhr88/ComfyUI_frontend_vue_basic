@@ -34,6 +34,6 @@ app.registerExtension({
 
         const [oldWidth, oldHeight] = node.size
 
-        node.setSize([Math.max(oldWidth, 320), Math.max(oldHeight, 500)])
+        node.setSize([Math.max(oldWidth, 300), Math.max(oldHeight, 520)])
     }
 });
