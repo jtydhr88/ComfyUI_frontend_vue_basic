@@ -16,7 +16,13 @@
   import { onMounted, ref } from 'vue'
   import DrawingApp from "./DrawingApp.vue";
   import { useI18n } from 'vue-i18n'
-  import { app } from "../../../scripts/app.js";
+  import { ComfyApp } from '@comfyorg/comfyui-frontend-types'
+
+  declare global {
+    interface Window {
+      app?: ComfyApp
+    }
+  }
 
   const { t } = useI18n()
   const drawingAppRef = ref<InstanceType<typeof DrawingApp> | null>(null);
@@ -35,37 +41,56 @@
   }
 
   async function uploadTempImage(imageData: string, prefix: string) {
-    const blob = await fetch(imageData).then((r) => r.blob())
-    const name = `${prefix}_${Date.now()}.png`
-    const file = new File([blob], name)
+    try {
+      if (!window.app?.api) {
+        throw new Error('ComfyUI API not available')
+      }
 
-    const body = new FormData()
-    body.append('image', file)
-    body.append('subfolder', 'threed')
-    body.append('type', 'temp')
+      const blob = await fetch(imageData).then((r) => r.blob())
+      const name = `${prefix}_${Date.now()}.png`
+      const file = new File([blob], name)
 
-    console.log(app.api.fetchApi)
+      const body = new FormData()
+      body.append('image', file)
+      body.append('subfolder', 'threed')
+      body.append('type', 'temp')
 
-    const resp = await app.api.fetchApi('/upload/image', {
-      method: 'POST',
-      body
-    })
+      console.log('Vue Component: Using window.app.api.fetchApi')
 
-    return resp.json()
+      const resp = await window.app.api.fetchApi('/upload/image', {
+        method: 'POST',
+        body
+      })
+
+      return resp.json()
+    } catch (error) {
+      console.error('Vue Component: Error uploading image:', error)
+      throw error
+    }
   }
 
   onMounted(() => {
     widget.serializeValue = async (node, index) => {
-      console.log("inside vue")
-      console.log("node", node)
-      console.log("index", index)
+      try {
+        console.log("Vue Component: inside vue serializeValue")
+        console.log("node", node)
+        console.log("index", index)
 
-      const canvasData = canvasDataURL.value
+        const canvasData = canvasDataURL.value
 
-      const data = await uploadTempImage(canvasData, "test_vue_basic")
+        if (!canvasData) {
+          console.warn('Vue Component: No canvas data available')
+          return { image: null }
+        }
 
-      return {
-        image: `threed/${data.name} [temp]`
+        const data = await uploadTempImage(canvasData, "test_vue_basic")
+
+        return {
+          image: `threed/${data.name} [temp]`
+        }
+      } catch (error) {
+        console.error('Vue Component: Error in serializeValue:', error)
+        return { image: null }
       }
     }
   })

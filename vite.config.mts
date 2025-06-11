@@ -21,7 +21,6 @@ export default defineConfig({
         },
         rollupOptions: {
             external: [
-                '../../../scripts/app.js',
                 '../../../scripts/api.js',
                 '../../../scripts/domWidget.js',
                 '../../../scripts/utils.js',
