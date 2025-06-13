@@ -1,9 +1,13 @@
 import { app } from "../../../scripts/app.js";
+import { ComfyApp } from '@comfyorg/comfyui-frontend-types'
+
 import { addWidget, ComponentWidgetImpl } from "../../../scripts/domWidget.js";
 
 import VueExampleComponent from "@/components/VueExampleComponent.vue";
 
-app.registerExtension({
+const comfyApp: ComfyApp = app;
+
+comfyApp.registerExtension({
     name: 'vue-basic',
     getCustomWidgets(app) {
         return {
@@ -24,7 +28,7 @@ app.registerExtension({
                 })
 
                 addWidget(node, widget)
-                
+
                 return {widget}
             }
         }
