@@ -1,5 +1,5 @@
 # ComfyUI Frontend Vue Basic
-(Important: Make sure to install this latest version of ComfyUI Frontend Vue Basic - 1.25.0!!!)
+(Important: Make sure to install this latest version of ComfyUI Frontend - **1.25.0**!!!)
 
 A demonstration custom node that showcases how to integrate Vue as a frontend framework within ComfyUI, complete with PrimeVue components and vue-i18n support.
 
