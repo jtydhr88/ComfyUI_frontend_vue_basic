@@ -1,5 +1,5 @@
 # ComfyUI Frontend Vue Basic
-(Still WIP)
+(Important: Make sure to install this latest version of ComfyUI Frontend Vue Basic - 1.25.0!!!)
 
 A demonstration custom node that showcases how to integrate Vue as a frontend framework within ComfyUI, complete with PrimeVue components and vue-i18n support.
 
@@ -29,6 +29,25 @@ This demonstration node is not designed to be installed directly via **git clone
 
 - [ComfyUI Manager]()
 - [ComfyUI Registry]()
+
+## Development Setup
+If you want to learn how to develop this custom node or modify it, you can set up a local development environment. Follow these steps:
+1. Clone the repository in your ComfyUI custom nodes directory:
+   ```bash
+   git clone https://github.com/jtydhr88/ComfyUI_frontend_vue_basic
+2. Navigate to the project directory: 
+   ```bash
+   cd ComfyUI_frontend_vue_basic
+   ```
+3. Install dependencies:
+   ```bash
+    npm install
+    ```
+4. Build the project:
+    ```bash
+    npm run build
+    ```
+5. Refresh ComfyUI to load.
 
 ## Usage
 
