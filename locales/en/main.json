@@ -5,5 +5,14 @@
     "clear-canvas": "Clear Canvas",
     "brush-size": "Brush Size",
     "pen-tooltip": "this is a pen"
+  },
+  "settingsCategories": {
+    "VueBasic": "Vue Basic"
+  },
+  "settings": {
+    "Comfy_Frontend_VueBasic_ExampleSetting": {
+      "name": "Vue Basic Example Setting in main.json",
+      "tooltip": "An example setting for the Vue Basic extension in main.json"
+    }
   }
 }

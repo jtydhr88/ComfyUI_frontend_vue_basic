@@ -4,5 +4,14 @@
     "pen": "铅笔",
     "clear-canvas": "清除画布",
     "brush-size": "笔刷大小"
+  },
+  "settingsCategories": {
+    "VueBasic": "Vue 基础示例"
+  },
+  "settings": {
+    "Comfy_Frontend_VueBasic_ExampleSetting": {
+      "name": "Vue 基础示例 in main.json",
+      "tooltip": "Vue 基础扩展的一个示例设置 in main.json"
+    }
   }
 }

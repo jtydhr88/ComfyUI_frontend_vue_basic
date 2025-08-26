@@ -1,7 +1,7 @@
-import { app } from "../../../scripts/app.js";
-import { ComfyApp } from '@comfyorg/comfyui-frontend-types'
+import {app} from "../../../scripts/app.js";
+import {ComfyApp} from '@comfyorg/comfyui-frontend-types'
 
-import { addWidget, ComponentWidgetImpl } from "../../../scripts/domWidget.js";
+import {addWidget, ComponentWidgetImpl} from "../../../scripts/domWidget.js";
 
 import VueExampleComponent from "@/components/VueExampleComponent.vue";
 
@@ -9,6 +9,18 @@ const comfyApp: ComfyApp = app;
 
 comfyApp.registerExtension({
     name: 'vue-basic',
+    settings: [
+        {
+            id: 'Comfy.Frontend.VueBasic.ExampleSetting',
+            category: ['Example', 'VueBasic', 'Example'],
+            name: 'Vue Basic Example Setting',
+            tooltip:
+                'An example setting for the Vue Basic extension',
+            type: 'boolean',
+            defaultValue: true,
+            experimental: true
+        }
+    ],
     getCustomWidgets(app) {
         return {
             CUSTOM_VUE_COMPONENT_BASIC(node) {
