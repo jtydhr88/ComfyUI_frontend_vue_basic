@@ -1,44 +1,35 @@
-import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
+import { resolve } from 'path'
 
 export default defineConfig({
-    plugins: [
-        vue(),
-        vueDevTools()
-    ],
+    plugins: [vue()],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        },
+            '@': resolve(__dirname, './src')
+        }
     },
     build: {
         lib: {
-            entry: './src/main.js',
+            entry: resolve(__dirname, './src/main.ts'),
             formats: ['es'],
             fileName: 'main'
         },
         rollupOptions: {
             external: [
-                '../../../scripts/app.js',
-                '../../../scripts/api.js',
-                '../../../scripts/domWidget.js',
-                '../../../scripts/utils.js',
-                'vue',
-                'vue-i18n',
-                /^primevue\/?.*/,
-                /^@primevue\/themes\/?.*/,
+                '../../../scripts/app.js'
             ],
             output: {
                 dir: 'js',
-                assetFileNames: 'assets/[name].[ext]',
-                entryFileNames: 'main.js'
+                entryFileNames: 'main.js',
+                chunkFileNames: 'assets/[name]-[hash].js',
+                assetFileNames: 'assets/[name]-[hash][extname]'
             }
         },
-        outDir: 'js',
-        sourcemap: false,
-        assetsInlineLimit: 0,
-        cssCodeSplit: false
+        sourcemap: true,
+        minify: false
+    },
+    define: {
+        'process.env.NODE_ENV': JSON.stringify('production')
     }
 })
